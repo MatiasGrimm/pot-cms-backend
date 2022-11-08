@@ -2,6 +2,6 @@
 {
     public interface IDisabledEntity
     {
-        public bool isDisabled { get; set; }
+        public bool IsDisabled { get; set; }
     }
 }

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace PotShop.API.Models.Entities
 {
-    public class ApiUser : IdentityUser, IDatedEntity, ICompanyEntity, IDisabledEntity
+    public class ApiUser : IdentityUser, IDatedEntity, IDisabledEntity
     {
         public DateTimeOffset Created { get; set; }
 
@@ -14,12 +14,16 @@ namespace PotShop.API.Models.Entities
 
         public string Name { get; set; }
 
-        public bool isDisabled { get; set; }
+        public string Address { get; set; }
+
+        public int RoleId { get; set; }
+
+        public bool IsDisabled { get; set; }
 
         public Guid CompanyId { get; set; }
 
-        public Company Company { get; set; }
-
         public List<IdentityRole> Roles { get; set; }
+
+        public Location Location { get; set; }
     }
 }
