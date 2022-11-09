@@ -16,8 +16,6 @@ namespace PotShop.API.Models.Entities
 
         public string Address { get; set; }
 
-        public int RoleId { get; set; }
-
         public bool IsDisabled { get; set; }
 
         public Guid CompanyId { get; set; }
