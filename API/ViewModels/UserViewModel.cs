@@ -1,4 +1,5 @@
-﻿using System;
+﻿using PotShop.API.Models.Entities;
+using System;
 using System.Collections.Generic;
 
 namespace PotShop.API.ViewModels
@@ -13,15 +14,13 @@ namespace PotShop.API.ViewModels
 
         public string Name { get; set; }
 
-        public bool Disabled { get; set; }
+        public string Address { get; set; }
 
-        public Guid? CompanyId { get; set; }
+        public bool IsDisabled { get; set; }
 
-        public string CompanyName { get; set; }
+        public Guid CompanyId { get; set; }
 
-        public string PhoneNumber { get; set; }
-
-        public string Email { get; set; }
+        public Location Location { get; set; }
 
         public List<string> Roles { get; set; }
     }
