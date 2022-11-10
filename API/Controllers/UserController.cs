@@ -44,7 +44,9 @@ namespace PotShop.API.Controllers
 
             if (!User.IsAdmin())
             {
-                request = request.Where(x => x.CompanyId == User.GetCompanyId());
+                //Check user access here.
+                _logger.LogWarning("We need to check the users permissions");
+                //request = request.Where(x => x.CompanyId == User.GetCompanyId());
             }
 
             var user = await request.ProjectTo<UserViewModel>(_mapper.ConfigurationProvider).ToListAsync();
@@ -59,7 +61,7 @@ namespace PotShop.API.Controllers
                 .ProjectTo<UserViewModel>(_mapper.ConfigurationProvider)
                 .FirstOrDefaultAsync();
 
-            if (user == null || (!User.IsAdmin() && User.GetCompanyId() != user.CompanyId))
+            if (user == null || (!User.IsAdmin() && User.GetLocationId() != user.Location.Id))
             {
                 return new NotFoundResult();
             }
@@ -76,7 +78,7 @@ namespace PotShop.API.Controllers
             {
                 // additional checks for non-admins
                 if (viewModel.Roles?.Any(x => x == AuthRoles.Admin) == true ||
-                    (viewModel.CompanyId.HasValue && viewModel.CompanyId.Value != User.GetCompanyId()))
+                    (string.IsNullOrEmpty(viewModel.LocationId) && Guid.Parse(viewModel.LocationId) != User.GetLocationId()))
                 {
                     _logger.LogError("User {username} does not have access to assign the specified roles, or access to the specified company", User.Identity.Name);
 
@@ -111,9 +113,9 @@ namespace PotShop.API.Controllers
 
                 if (User.IsAdmin())
                 {
-                    if (viewModel.CompanyId.HasValue)
+                    if (viewModel.LocationId.Length > 0)
                     {
-                        newUser.CompanyId = viewModel.CompanyId.Value;
+                        newUser.Location.Id = Guid.Parse(viewModel.LocationId);
                     }
                     else
                     {
@@ -123,7 +125,7 @@ namespace PotShop.API.Controllers
                 else
                 {
                     // non-admins can only add users to their own organization
-                    newUser.CompanyId = User.GetCompanyId();
+                    newUser.Location.Id = User.GetLocationId();
                 }
 
                 string userPassword = GeneratePassword();
@@ -155,7 +157,7 @@ namespace PotShop.API.Controllers
                     return NotFound();
                 }
 
-                if (!this.UserHasAccess(newUser))
+                if (!this.UserHasAccess(Guid.Parse(newUser.Id)))
                 {
                     _logger.LogError("User does not have company access to target user {userid}", newUser.Id);
 

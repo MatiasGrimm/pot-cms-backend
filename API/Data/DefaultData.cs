@@ -22,18 +22,18 @@ namespace PotShop.API.Data
             {
                 var user = new ApiUser()
                 {
-                    UserName = "mum@kodeministeriet.dk",
-                    Email = "mum@kodeministeriet.dk",
-                    Name = "Magnus Madsen",
-                    Company = new Company()
+                    UserName = "mgc@kodeministeriet.dk",
+                    Email = "mgc@kodeministeriet.dk",
+                    Name = "Matias Grimm",
+                    Location = new Location()
                     {
                         Name = "Kodeministeriet",
-                        CVR = "41728086",
-                        Phone = "53540855",
+                        Address = "Den der vej",
+                        Type = 1,
                     }
                 };
 
-                await userMgr.CreateAsync(user, "312Kodemini");
+                await userMgr.CreateAsync(user, "p@ssw0rd");
 
                 if (!await roleManager.RoleExistsAsync(AuthRoles.Admin))
                 {

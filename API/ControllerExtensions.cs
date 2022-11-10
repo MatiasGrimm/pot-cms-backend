@@ -10,12 +10,12 @@ namespace PotShop.API
     public static class ControllerExtensions
     {
         public static bool UserHasAccess(this Controller controller, Guid companyId) { 
-            return controller.User.GetCompanyId() == companyId || controller.User.IsAdmin();
+            return controller.User.GetLocationId() == companyId || controller.User.IsAdmin();
         }
 
-        public static bool UserHasAccess(this Controller controller, ICompanyEntity entity)
-        {
-            return UserHasAccess(controller, entity.CompanyId);
-        }
+        //public static bool UserHasAccess(this Controller controller, ICompanyEntity entity)
+        //{
+        //    return UserHasAccess(controller, entity.CompanyId);
+        //}
     }
 }

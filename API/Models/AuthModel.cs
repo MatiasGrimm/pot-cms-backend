@@ -43,7 +43,7 @@ namespace PotShop.API.Models
 
             if (user != null)
             {
-                if (user.isDisabled)
+                if (user.IsDisabled)
                 {
                     _logger.LogWarning("User {username} {userId} is disabled", user.UserName, user.Id);
                     throw new InvalidOperationException("User is disabled");
@@ -56,7 +56,7 @@ namespace PotShop.API.Models
 
                     roles = await _userManager.GetRolesAsync(user);
 
-                    identity = _jwtFactory.GenerateClaimsIdentity(user.UserName, user.Id, roles, user.CompanyId);
+                    identity = _jwtFactory.GenerateClaimsIdentity(user.UserName, user.Id, roles, user.Location.Id);
                 }
                 else
                 {
@@ -128,7 +128,7 @@ namespace PotShop.API.Models
             return new AuthResponse()
             {
                 User = token.User,
-                Identity = _jwtFactory.GenerateClaimsIdentity(token.User.UserName, token.User.Id, roles, token.User.CompanyId),
+                Identity = _jwtFactory.GenerateClaimsIdentity(token.User.UserName, token.User.Id, roles, token.User.Location.Id),
                 RefreshTokenId = Convert.ToBase64String(token.Id.ToByteArray()),
                 Roles = roles,
             };
