@@ -17,9 +17,15 @@ namespace PotShop.API.Data
             SavingChanges += ApiDbContext_SavingChanges;
         }
 
-        //public DbSet<Company> Companies { get; set; }
-
         public DbSet<Location> Locations { get; set; }
+
+        public DbSet<Product> Products { get; set; }
+
+        public DbSet<Inventory> Inventory { get; set; }
+
+        public DbSet<InventoryProduct> inventoryProducts { get; set; }
+
+        public DbSet<SalesHistory> SalesHistories { get; set; }
 
         public DbSet<AuthRefreshToken> AuthRefreshTokens { get; set; }
 

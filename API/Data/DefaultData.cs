@@ -18,22 +18,47 @@ namespace PotShop.API.Data
             var userMgr = serviceProvider.GetRequiredService<UserManager<ApiUser>>();
             var roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
 
+            Location defaultLocation = new Location();
+
+            if (!context.Locations.Any())
+            {
+                defaultLocation = new Location()
+                {
+                    Name = "Kodeministeriet",
+                    Address = "Den der vej",
+                    Type = 1,
+                };
+            }
+
             if (!context.Users.Any())
             {
-                var user = new ApiUser()
+                var mgc = new ApiUser()
                 {
                     UserName = "mgc@kodeministeriet.dk",
                     Email = "mgc@kodeministeriet.dk",
                     Name = "Matias Grimm",
-                    Location = new Location()
-                    {
-                        Name = "Kodeministeriet",
-                        Address = "Den der vej",
-                        Type = 1,
-                    }
+                    Location = defaultLocation
                 };
 
-                await userMgr.CreateAsync(user, "p@ssw0rd");
+                var testManager = new ApiUser()
+                {
+                    UserName = "testManager@testing.dk",
+                    Email = "testManager@testing.dk",
+                    Name = "Test Manager",
+                    Location = defaultLocation
+                };
+
+                var testEmployee = new ApiUser()
+                {
+                    UserName = "TestEmployee@testing.dk",
+                    Email = "TestEmployee@testing.dk",
+                    Name = "Test Employee",
+                    Location = defaultLocation
+                };
+
+                await userMgr.CreateAsync(mgc, "p@ssw0rd");
+                await userMgr.CreateAsync(testEmployee, "p@ssw0rd");
+                await userMgr.CreateAsync(testManager, "p@ssw0rd");
 
                 if (!await roleManager.RoleExistsAsync(AuthRoles.Admin))
                 {
@@ -45,7 +70,8 @@ namespace PotShop.API.Data
                     await roleManager.CreateAsync(new IdentityRole() { Name = AuthRoles.Manager });
                 }
 
-                await userMgr.AddToRolesAsync(user, new string[] { AuthRoles.Admin, AuthRoles.Manager } );
+                await userMgr.AddToRolesAsync(mgc, new string[] { AuthRoles.Admin, AuthRoles.Manager } );
+                await userMgr.AddToRolesAsync(testManager, new string[] {AuthRoles.Manager});
             }
         }
     }

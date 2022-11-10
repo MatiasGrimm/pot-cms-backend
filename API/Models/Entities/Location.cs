@@ -1,16 +1,17 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace PotShop.API.Models.Entities
 {
     public class Location : IDisabledEntity
     {
-        public Guid id { get; set; }
+        public Guid Id { get; set; }
 
         public string Name { get; set; }
 
         public string Address { get; set; }
 
-        public int LeaderId { get; set; }
+        public int ManagerId { get; set; }
 
         public int Type { get; set; }
 

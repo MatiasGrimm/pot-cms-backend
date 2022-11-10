@@ -21,5 +21,7 @@ namespace PotShop.API.Models.Entities
         public List<IdentityRole> Roles { get; set; }
 
         public Location Location { get; set; }
+
+        public List<SalesHistory> SalesHistory { get; set; }
     }
 }
