@@ -9,7 +9,7 @@ namespace PotShop.API
 {
     public static class UserExtensions
     {
-        public static Guid GetCompanyId(this ClaimsPrincipal claims)
+        public static Guid GetLocationId(this ClaimsPrincipal claims)
         {
             return new Guid(claims.FindFirstValue(AuthConstants.JwtClaimIdentifiers.CompanyId));
         }

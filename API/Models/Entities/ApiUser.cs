@@ -18,8 +18,6 @@ namespace PotShop.API.Models.Entities
 
         public bool IsDisabled { get; set; }
 
-        public Guid CompanyId { get; set; }
-
         public List<IdentityRole> Roles { get; set; }
 
         public Location Location { get; set; }

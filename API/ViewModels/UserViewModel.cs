@@ -12,13 +12,15 @@ namespace PotShop.API.ViewModels
 
         public DateTimeOffset Updated { get; set; }
 
+        public string Email { get; set; }
+
+        public string PhoneNumber { get; set; }
+
         public string Name { get; set; }
 
         public string Address { get; set; }
 
         public bool IsDisabled { get; set; }
-
-        public Guid CompanyId { get; set; }
 
         public Location Location { get; set; }
 

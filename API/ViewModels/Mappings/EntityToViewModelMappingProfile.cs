@@ -12,10 +12,10 @@ namespace PotShop.API.ViewModels.Mappings
     {
         public EntityToViewModelMappingProfile()
         {
-            CreateMap<Company, CompanyViewModel>()
-                .ReverseMap();
+            //CreateMap<ApiUser, EmployeeViewModel>()
+            //    .ReverseMap();
 
-            CreateMap<Company, CompanyDetailsViewModel>();
+            //CreateMap<Location, LocationViewModel>();
 
             CreateMap<ApiUser, UserViewModel>();
 
