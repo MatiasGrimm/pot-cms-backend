@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace PotShop.API.Models.Entities
 {
-    public class Product
+    public class Product : IDisabledEntity
     {
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Key]
@@ -13,5 +13,7 @@ namespace PotShop.API.Models.Entities
         public string Name { get; set; }
 
         public string Description { get; set; }
+
+        public bool IsDisabled { get; set; }
     }
 }
