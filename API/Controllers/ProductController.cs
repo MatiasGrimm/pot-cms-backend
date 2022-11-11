@@ -84,6 +84,20 @@ namespace PotShop.API.Controllers
 
             return Ok(entity);
         }
+
+        [HttpPut("state/{id}")]
+        public async Task<IActionResult> UpdateState(Guid id)
+        {
+            Product entity = _context.Products.Where(x => x.Id == id).FirstOrDefault();
+
+            entity.IsDisabled = !entity.IsDisabled;
+
+            _context.Products.Update(entity);
+
+            await _context.SaveChangesAsync();
+
+            return Ok(entity);
+        }
     }
 }
 
