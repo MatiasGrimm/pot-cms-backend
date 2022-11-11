@@ -12,12 +12,25 @@ namespace PotShop.API.ViewModels.Mappings
     {
         public EntityToViewModelMappingProfile()
         {
-            //CreateMap<ApiUser, EmployeeViewModel>()
-            //    .ReverseMap();
+            CreateMap<ApiUser, SimpleEmployeeViewModel>();
 
-            //CreateMap<Location, LocationViewModel>();
+            CreateMap<ApiUser, UserViewModel>()
+                .ReverseMap();
 
-            CreateMap<ApiUser, UserViewModel>();
+            CreateMap<Product, ProductViewModel>()
+                .ReverseMap();
+
+            CreateMap<Inventory, InventoryViewModel>()
+                .ReverseMap();
+
+            CreateMap<SalesHistory, SalesHistoryViewModel>()
+                .ReverseMap();
+            
+            CreateMap<ProductList, ProductListViewModel>()
+                .ReverseMap();
+
+            CreateMap<Location, LocationViewModel>()
+                .ReverseMap();
 
             CreateMap<IdentityRole, string>()
                 .ConvertUsing(x => x.Name);
