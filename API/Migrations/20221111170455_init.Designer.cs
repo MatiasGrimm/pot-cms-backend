@@ -10,7 +10,7 @@ using PotShop.API.Data;
 namespace PotShop.API.Migrations
 {
     [DbContext(typeof(ApiDbContext))]
-    [Migration("20221111165337_init")]
+    [Migration("20221111170455_init")]
     partial class init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -338,6 +338,9 @@ namespace PotShop.API.Migrations
 
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsDisabled")
+                        .HasColumnType("bit");
 
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
