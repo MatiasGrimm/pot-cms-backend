@@ -38,6 +38,20 @@ namespace PotShop.API.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Products",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    IsDisabled = table.Column<bool>(type: "bit", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Products", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "AspNetRoleClaims",
                 columns: table => new
                 {
@@ -248,27 +262,6 @@ namespace PotShop.API.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Products",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    IsDisabled = table.Column<bool>(type: "bit", nullable: false),
-                    SalesHistoryId = table.Column<Guid>(type: "uniqueidentifier", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Products", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Products_SalesHistories_SalesHistoryId",
-                        column: x => x.SalesHistoryId,
-                        principalTable: "SalesHistories",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "inventoryProducts",
                 columns: table => new
                 {
@@ -290,6 +283,30 @@ namespace PotShop.API.Migrations
                         name: "FK_inventoryProducts_Products_ProductId",
                         column: x => x.ProductId,
                         principalTable: "Products",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ProductSalesHistory",
+                columns: table => new
+                {
+                    ProductsId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    SalesHistoriesId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ProductSalesHistory", x => new { x.ProductsId, x.SalesHistoriesId });
+                    table.ForeignKey(
+                        name: "FK_ProductSalesHistory_Products_ProductsId",
+                        column: x => x.ProductsId,
+                        principalTable: "Products",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_ProductSalesHistory_SalesHistories_SalesHistoriesId",
+                        column: x => x.SalesHistoriesId,
+                        principalTable: "SalesHistories",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -361,9 +378,9 @@ namespace PotShop.API.Migrations
                 column: "ProductId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Products_SalesHistoryId",
-                table: "Products",
-                column: "SalesHistoryId");
+                name: "IX_ProductSalesHistory_SalesHistoriesId",
+                table: "ProductSalesHistory",
+                column: "SalesHistoriesId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_SalesHistories_EmployeeId",
@@ -398,6 +415,9 @@ namespace PotShop.API.Migrations
 
             migrationBuilder.DropTable(
                 name: "inventoryProducts");
+
+            migrationBuilder.DropTable(
+                name: "ProductSalesHistory");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");

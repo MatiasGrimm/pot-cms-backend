@@ -10,7 +10,7 @@ using PotShop.API.Data;
 namespace PotShop.API.Migrations
 {
     [DbContext(typeof(ApiDbContext))]
-    [Migration("20221114094256_init")]
+    [Migration("20221114095051_init")]
     partial class init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -345,12 +345,7 @@ namespace PotShop.API.Migrations
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<Guid?>("SalesHistoryId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.HasKey("Id");
-
-                    b.HasIndex("SalesHistoryId");
 
                     b.ToTable("Products");
                 });
@@ -383,6 +378,21 @@ namespace PotShop.API.Migrations
                     b.HasIndex("ShopId");
 
                     b.ToTable("SalesHistories");
+                });
+
+            modelBuilder.Entity("ProductSalesHistory", b =>
+                {
+                    b.Property<Guid>("ProductsId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("SalesHistoriesId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("ProductsId", "SalesHistoriesId");
+
+                    b.HasIndex("SalesHistoriesId");
+
+                    b.ToTable("ProductSalesHistory");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -480,13 +490,6 @@ namespace PotShop.API.Migrations
                     b.Navigation("Product");
                 });
 
-            modelBuilder.Entity("PotShop.API.Models.Entities.Product", b =>
-                {
-                    b.HasOne("PotShop.API.Models.Entities.SalesHistory", null)
-                        .WithMany("Products")
-                        .HasForeignKey("SalesHistoryId");
-                });
-
             modelBuilder.Entity("PotShop.API.Models.Entities.SalesHistory", b =>
                 {
                     b.HasOne("PotShop.API.Models.Entities.ApiUser", "Employee")
@@ -504,6 +507,21 @@ namespace PotShop.API.Migrations
                     b.Navigation("Shop");
                 });
 
+            modelBuilder.Entity("ProductSalesHistory", b =>
+                {
+                    b.HasOne("PotShop.API.Models.Entities.Product", null)
+                        .WithMany()
+                        .HasForeignKey("ProductsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("PotShop.API.Models.Entities.SalesHistory", null)
+                        .WithMany()
+                        .HasForeignKey("SalesHistoriesId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("PotShop.API.Models.Entities.ApiUser", b =>
                 {
                     b.Navigation("SalesHistory");
@@ -517,11 +535,6 @@ namespace PotShop.API.Migrations
             modelBuilder.Entity("PotShop.API.Models.Entities.Location", b =>
                 {
                     b.Navigation("Inventory");
-                });
-
-            modelBuilder.Entity("PotShop.API.Models.Entities.SalesHistory", b =>
-                {
-                    b.Navigation("Products");
                 });
 #pragma warning restore 612, 618
         }
