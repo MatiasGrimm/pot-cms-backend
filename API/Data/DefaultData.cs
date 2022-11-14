@@ -73,6 +73,31 @@ namespace PotShop.API.Data
                 await userMgr.AddToRolesAsync(mgc, new string[] { AuthRoles.Admin, AuthRoles.Manager } );
                 await userMgr.AddToRolesAsync(testManager, new string[] {AuthRoles.Manager});
             }
+            if (!context.Products.Any())
+            {
+                Product prod1 = new Product()
+                {
+                    Name = "1 🥷🤖",
+                    Description = "1 Måske kommer der en 🥷"
+                };
+                Product prod2 = new Product()
+                {
+                    Name = "2 🥷🤖",
+                    Description = "3 Måske kommer der en 🥷"
+                };
+                Product prod3 = new Product()
+                {
+                    Name = "3 🥷🤖",
+                    Description = "3 Jeg er disabled",
+                    IsDisabled = true
+                };
+
+                await context.Products.AddAsync(prod1);
+                await context.Products.AddAsync(prod2);
+                await context.Products.AddAsync(prod3);
+
+                await context.SaveChangesAsync();
+            }
         }
     }
 }
