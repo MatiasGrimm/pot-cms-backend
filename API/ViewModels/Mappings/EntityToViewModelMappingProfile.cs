@@ -26,9 +26,6 @@ namespace PotShop.API.ViewModels.Mappings
             CreateMap<SalesHistory, SalesHistoryViewModel>()
                 .ReverseMap();
             
-            CreateMap<ProductList, ProductListViewModel>()
-                .ReverseMap();
-
             CreateMap<Location, LocationViewModel>()
                 .ReverseMap();
 

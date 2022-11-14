@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -10,7 +11,7 @@ namespace PotShop.API.Models.Entities
         [Key]
         public Guid Id { get; set; }
 
-        public ProductList ProductList { get; set; }
+        public List<Product> Products { get; set; }
 
         public Guid ShopId { get; set; }
 
