@@ -38,17 +38,6 @@ namespace PotShop.API.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "ProductList",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_ProductList", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "AspNetRoleClaims",
                 columns: table => new
                 {
@@ -120,27 +109,6 @@ namespace PotShop.API.Migrations
                         name: "FK_Inventory_Locations_locationId",
                         column: x => x.locationId,
                         principalTable: "Locations",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Products",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    IsDisabled = table.Column<bool>(type: "bit", nullable: false),
-                    ProductListId = table.Column<Guid>(type: "uniqueidentifier", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Products", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Products_ProductList_ProductListId",
-                        column: x => x.ProductListId,
-                        principalTable: "ProductList",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
@@ -256,7 +224,6 @@ namespace PotShop.API.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    ProductListId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     ShopId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     EmployeeId = table.Column<string>(type: "nvarchar(450)", nullable: true),
                     CustomerCPR = table.Column<string>(type: "nvarchar(max)", nullable: true),
@@ -278,10 +245,25 @@ namespace PotShop.API.Migrations
                         principalTable: "Locations",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Products",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    IsDisabled = table.Column<bool>(type: "bit", nullable: false),
+                    SalesHistoryId = table.Column<Guid>(type: "uniqueidentifier", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Products", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_SalesHistories_ProductList_ProductListId",
-                        column: x => x.ProductListId,
-                        principalTable: "ProductList",
+                        name: "FK_Products_SalesHistories_SalesHistoryId",
+                        column: x => x.SalesHistoryId,
+                        principalTable: "SalesHistories",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
@@ -379,19 +361,14 @@ namespace PotShop.API.Migrations
                 column: "ProductId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Products_ProductListId",
+                name: "IX_Products_SalesHistoryId",
                 table: "Products",
-                column: "ProductListId");
+                column: "SalesHistoryId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_SalesHistories_EmployeeId",
                 table: "SalesHistories",
                 column: "EmployeeId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_SalesHistories_ProductListId",
-                table: "SalesHistories",
-                column: "ProductListId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_SalesHistories_ShopId",
@@ -423,9 +400,6 @@ namespace PotShop.API.Migrations
                 name: "inventoryProducts");
 
             migrationBuilder.DropTable(
-                name: "SalesHistories");
-
-            migrationBuilder.DropTable(
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
@@ -435,10 +409,10 @@ namespace PotShop.API.Migrations
                 name: "Products");
 
             migrationBuilder.DropTable(
-                name: "AspNetUsers");
+                name: "SalesHistories");
 
             migrationBuilder.DropTable(
-                name: "ProductList");
+                name: "AspNetUsers");
 
             migrationBuilder.DropTable(
                 name: "Locations");

@@ -10,7 +10,7 @@ using PotShop.API.Data;
 namespace PotShop.API.Migrations
 {
     [DbContext(typeof(ApiDbContext))]
-    [Migration("20221111170455_init")]
+    [Migration("20221114094256_init")]
     partial class init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -345,25 +345,14 @@ namespace PotShop.API.Migrations
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<Guid?>("ProductListId")
+                    b.Property<Guid?>("SalesHistoryId")
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ProductListId");
+                    b.HasIndex("SalesHistoryId");
 
                     b.ToTable("Products");
-                });
-
-            modelBuilder.Entity("PotShop.API.Models.Entities.ProductList", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("ProductList");
                 });
 
             modelBuilder.Entity("PotShop.API.Models.Entities.SalesHistory", b =>
@@ -378,9 +367,6 @@ namespace PotShop.API.Migrations
                     b.Property<string>("EmployeeId")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<Guid?>("ProductListId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<DateTime>("PurchaseTime")
                         .HasColumnType("datetime2");
 
@@ -393,8 +379,6 @@ namespace PotShop.API.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("EmployeeId");
-
-                    b.HasIndex("ProductListId");
 
                     b.HasIndex("ShopId");
 
@@ -498,9 +482,9 @@ namespace PotShop.API.Migrations
 
             modelBuilder.Entity("PotShop.API.Models.Entities.Product", b =>
                 {
-                    b.HasOne("PotShop.API.Models.Entities.ProductList", null)
+                    b.HasOne("PotShop.API.Models.Entities.SalesHistory", null)
                         .WithMany("Products")
-                        .HasForeignKey("ProductListId");
+                        .HasForeignKey("SalesHistoryId");
                 });
 
             modelBuilder.Entity("PotShop.API.Models.Entities.SalesHistory", b =>
@@ -509,10 +493,6 @@ namespace PotShop.API.Migrations
                         .WithMany("SalesHistory")
                         .HasForeignKey("EmployeeId");
 
-                    b.HasOne("PotShop.API.Models.Entities.ProductList", "ProductList")
-                        .WithMany()
-                        .HasForeignKey("ProductListId");
-
                     b.HasOne("PotShop.API.Models.Entities.Location", "Shop")
                         .WithMany()
                         .HasForeignKey("ShopId")
@@ -520,8 +500,6 @@ namespace PotShop.API.Migrations
                         .IsRequired();
 
                     b.Navigation("Employee");
-
-                    b.Navigation("ProductList");
 
                     b.Navigation("Shop");
                 });
@@ -541,7 +519,7 @@ namespace PotShop.API.Migrations
                     b.Navigation("Inventory");
                 });
 
-            modelBuilder.Entity("PotShop.API.Models.Entities.ProductList", b =>
+            modelBuilder.Entity("PotShop.API.Models.Entities.SalesHistory", b =>
                 {
                     b.Navigation("Products");
                 });
