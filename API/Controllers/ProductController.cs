@@ -40,6 +40,24 @@ namespace PotShop.API.Controllers
         [HttpGet]
         public async Task<IActionResult> GetProducts()
         {
+            IQueryable<Product> db = _context.Products.Where(x => !x.IsDisabled);
+
+            if (!User.IsAdmin())
+            {
+                //Check user access here.
+                _logger.LogWarning("We need to check the users permissions");
+                //request = request.Where(x => x.CompanyId == User.GetCompanyId());
+            }
+
+            //var user = await request.ProjectTo<UserViewModel>(_mapper.ConfigurationProvider).ToListAsync();
+
+            var product = await db.ProjectTo<ProductViewModel>(_mapper.ConfigurationProvider).ToListAsync();
+            return Ok(product);
+        }
+
+        [HttpGet("all")]
+        public async Task<IActionResult> GetAllProducts()
+        {
             IQueryable<Product> db = _context.Products;
 
             if (!User.IsAdmin())
@@ -97,6 +115,15 @@ namespace PotShop.API.Controllers
             await _context.SaveChangesAsync();
 
             return Ok(entity);
+        }
+
+        [HttpDelete]
+        [Authorize(AuthRoles.Admin)]
+        public async Task<IActionResult> Delete(Guid id)
+        {
+            Product entity = await _context.Products.Where(x => x.Id == id).FirstOrDefaultAsync();
+            _context.Products.Remove(entity);
+            return Ok($"Product {entity.Id} with name {entity.Name}, has been deleted from the database");
         }
     }
 }
