@@ -365,3 +365,4 @@ FodyWeavers.xsd
 
 # Dummy email implementation json files
 /CubicAPI/emails
+API/appsettings.json
