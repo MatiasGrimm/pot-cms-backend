@@ -19,7 +19,7 @@ namespace PotShop.API.Models.Entities
 
         public bool IsDisabled { get; set; }
 
-        public Access Access { get; set; }
+        public StaffAccess StaffAccess { get; set; }
 
         public List<IdentityRole> Roles { get; set; }
 

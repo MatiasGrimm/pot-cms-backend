@@ -47,9 +47,14 @@ namespace PotShop.API
             return user;
         }
 
+        //public static bool HasPermissions(this ClaimsPrincipal claims, ApiDbContext context, Access access, Guid locationId)
+        //{
+        //    return context.StaffAccess.Where(x => x.StaffId == claims.GetUserId() && x.Location.Id == locationId && x.Access.HasFlag(access)).Any();
+        //}
+
         public static bool HasPermissions(this ClaimsPrincipal claims, ApiDbContext context, Access access)
         {
-            return context.Users.FirstOrDefault(x => x.Id == claims.GetUserId()).Access.HasFlag(access);
+            return context.StaffAccess.Where(x => x.StaffId == claims.GetUserId() && x.Access.HasFlag(access)).Any();
         }
     }
 }
