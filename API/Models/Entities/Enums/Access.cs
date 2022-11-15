@@ -10,9 +10,9 @@ namespace PotShop.API.Models.Entities.Enums
         None = 0,
         GetInventory = 1,
         UpdateInventory = 2,
-        GetDisabledProducts = 4,
+        GetLocation = 4,
         ModifyLocation = 8,
 
-        All = GetInventory | UpdateInventory | GetDisabledProducts | ModifyLocation
+        All = GetInventory | UpdateInventory | GetLocation | ModifyLocation
     }
 }
