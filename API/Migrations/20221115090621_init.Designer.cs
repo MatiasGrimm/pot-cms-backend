@@ -10,7 +10,7 @@ using PotShop.API.Data;
 namespace PotShop.API.Migrations
 {
     [DbContext(typeof(ApiDbContext))]
-    [Migration("20221115075804_init")]
+    [Migration("20221115090621_init")]
     partial class init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

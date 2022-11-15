@@ -63,7 +63,7 @@ namespace PotShop.API.Controllers
 
             if (!User.IsAdmin())
             {
-                if (!User.HasPermissions(_context, Access.GetDisabled)) return NotFound();
+                if (!User.HasPermissions(_context, Access.GetDisabledProducts)) return NotFound();
             }
 
             return Ok(products);

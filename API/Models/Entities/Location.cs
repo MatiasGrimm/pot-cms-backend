@@ -21,6 +21,7 @@ namespace PotShop.API.Models.Entities
 
         public bool IsDisabled { get; set; }
 
+        public List<StaffAccess> StaffAccess { get; set; }
 
         public Inventory Inventory { get; set; }
     }
