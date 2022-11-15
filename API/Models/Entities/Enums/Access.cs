@@ -8,7 +8,11 @@ namespace PotShop.API.Models.Entities.Enums
         // Numbers shouldn't be changed at all!
         // ONLY ADD TO THE BOTTOM OF THE LIST :)
         None = 0,
+        GetInventory = 1,
+        UpdateInventory = 2,
+        GetDisabledProducts = 4,
+        ModifyLocation = 8,
 
-        All = None
+        All = GetInventory | UpdateInventory | GetDisabledProducts | ModifyLocation
     }
 }
