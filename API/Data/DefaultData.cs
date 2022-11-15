@@ -20,7 +20,6 @@ namespace PotShop.API.Data
                 UserName = username,
                 Email = username,
                 Name = name,
-                Location = location,
             };
 
             var staffAccess = new StaffAccess()
@@ -41,7 +40,6 @@ namespace PotShop.API.Data
                 UserName = username,
                 Email = username,
                 Name = name,
-                Location = location,
             };
 
             var staffAccess = new StaffAccess()
@@ -76,7 +74,6 @@ namespace PotShop.API.Data
                 };
             }
 
-
             if (!await roleManager.RoleExistsAsync(AuthRoles.Admin))
             {
                 await roleManager.CreateAsync(new IdentityRole() { Name = AuthRoles.Admin });
@@ -90,39 +87,8 @@ namespace PotShop.API.Data
             if (!context.Users.Any())
             {
                 await AddStaffWithAllPerms(userMgr, "mgc@kodeministeriet.dk", "Matias Grimm", defaultLocation);
-
-                //var mgc = new ApiUser()
-                //{
-                //    UserName = "mgc@kodeministeriet.dk",
-                //    Email = "mgc@kodeministeriet.dk",
-                //    Name = "Matias Grimm",
-                //    Location = defaultLocation
-                //};
-
-
-                //var testManager = new ApiUser()
-                //{
-                //    UserName = "testManager@testing.dk",
-                //    Email = "testManager@testing.dk",
-                //    Name = "Test Manager",
-                //    Location = defaultLocation
-                //};
-
-                //var testEmployee = new ApiUser()
-                //{
-                //    UserName = "TestEmployee@testing.dk",
-                //    Email = "TestEmployee@testing.dk",
-                //    Name = "Test Employee",
-                //    Location = defaultLocation
-                //};
-
-                //await userMgr.CreateAsync(mgc, "p@ssw0rd");
-                //await userMgr.CreateAsync(testEmployee, "p@ssw0rd");
-                //await userMgr.CreateAsync(testManager, "p@ssw0rd");
-
-
-                //await userMgr.AddToRolesAsync(mgc, new string[] { AuthRoles.Admin, AuthRoles.Manager } );
-                //await userMgr.AddToRolesAsync(testManager, new string[] {AuthRoles.Manager});
+                await AddStaffWithAllPerms(userMgr, "tma@kodeministeriet.dk", "Tavs Christian Becker Malling", defaultLocation);
+                await AddStaff(userMgr, "test@test.test", "Tjest", defaultLocation);
             }
             if (!context.Products.Any())
             {
