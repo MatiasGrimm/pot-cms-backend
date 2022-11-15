@@ -1,6 +1,7 @@
 ﻿using PotShop.API.Data;
 using PotShop.API.Helpers;
 using PotShop.API.Models.Entities;
+using PotShop.API.Models.Entities.Enums;
 using System;
 using System.Linq;
 using System.Security.Claims;
@@ -44,6 +45,16 @@ namespace PotShop.API
             }
 
             return user;
+        }
+
+        //public static bool HasPermissions(this ClaimsPrincipal claims, ApiDbContext context, Access access, Guid locationId)
+        //{
+        //    return context.StaffAccess.Where(x => x.StaffId == claims.GetUserId() && x.Location.Id == locationId && x.Access.HasFlag(access)).Any();
+        //}
+
+        public static bool HasPermissions(this ClaimsPrincipal claims, ApiDbContext context, Access access)
+        {
+            return context.StaffAccess.Where(x => x.StaffId == claims.GetUserId() && x.Access.HasFlag(access)).Any();
         }
     }
 }

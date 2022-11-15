@@ -25,6 +25,8 @@ namespace PotShop.API.Data
 
         public DbSet<InventoryProduct> inventoryProducts { get; set; }
 
+        public DbSet<StaffAccess> StaffAccess { get; set; }
+
         public DbSet<SalesHistory> SalesHistories { get; set; }
 
         public DbSet<AuthRefreshToken> AuthRefreshTokens { get; set; }

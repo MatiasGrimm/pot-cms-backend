@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using PotShop.API.Models.Entities.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,6 +18,8 @@ namespace PotShop.API.Models.Entities
         public string Address { get; set; }
 
         public bool IsDisabled { get; set; }
+
+        public StaffAccess StaffAccess { get; set; }
 
         public List<IdentityRole> Roles { get; set; }
 

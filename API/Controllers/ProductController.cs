@@ -14,6 +14,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using PotShop.API.Models.Entities.Enums;
 
 namespace PotShop.API.Controllers
 {
@@ -56,21 +57,16 @@ namespace PotShop.API.Controllers
         }
 
         [HttpGet("all")]
-        public async Task<IActionResult> GetAllProducts()
+        public IActionResult GetAllProducts()
         {
-            IQueryable<Product> db = _context.Products;
+            List<Product> products = _context.Products.ToList();
 
             if (!User.IsAdmin())
             {
-                //Check user access here.
-                _logger.LogWarning("We need to check the users permissions");
-                //request = request.Where(x => x.CompanyId == User.GetCompanyId());
+                if (!User.HasPermissions(_context, Access.GetDisabled)) return NotFound();
             }
 
-            //var user = await request.ProjectTo<UserViewModel>(_mapper.ConfigurationProvider).ToListAsync();
-
-            var product = await db.ProjectTo<ProductViewModel>(_mapper.ConfigurationProvider).ToListAsync();
-            return Ok(product);
+            return Ok(products);
         }
 
         [HttpGet("{id}")]

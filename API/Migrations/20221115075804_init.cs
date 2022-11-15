@@ -262,6 +262,33 @@ namespace PotShop.API.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "StaffAccess",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    StaffId = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    Access = table.Column<int>(type: "int", nullable: false),
+                    LocationId = table.Column<Guid>(type: "uniqueidentifier", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_StaffAccess", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_StaffAccess_AspNetUsers_StaffId",
+                        column: x => x.StaffId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_StaffAccess_Locations_LocationId",
+                        column: x => x.LocationId,
+                        principalTable: "Locations",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "inventoryProducts",
                 columns: table => new
                 {
@@ -391,6 +418,18 @@ namespace PotShop.API.Migrations
                 name: "IX_SalesHistories_ShopId",
                 table: "SalesHistories",
                 column: "ShopId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_StaffAccess_LocationId",
+                table: "StaffAccess",
+                column: "LocationId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_StaffAccess_StaffId",
+                table: "StaffAccess",
+                column: "StaffId",
+                unique: true,
+                filter: "[StaffId] IS NOT NULL");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -418,6 +457,9 @@ namespace PotShop.API.Migrations
 
             migrationBuilder.DropTable(
                 name: "ProductSalesHistory");
+
+            migrationBuilder.DropTable(
+                name: "StaffAccess");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");

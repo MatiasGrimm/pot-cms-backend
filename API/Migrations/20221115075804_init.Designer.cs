@@ -10,7 +10,7 @@ using PotShop.API.Data;
 namespace PotShop.API.Migrations
 {
     [DbContext(typeof(ApiDbContext))]
-    [Migration("20221114095051_init")]
+    [Migration("20221115075804_init")]
     partial class init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -380,6 +380,33 @@ namespace PotShop.API.Migrations
                     b.ToTable("SalesHistories");
                 });
 
+            modelBuilder.Entity("PotShop.API.Models.Entities.StaffAccess", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("Access")
+                        .HasColumnType("int");
+
+                    b.Property<Guid?>("LocationId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("StaffId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("LocationId");
+
+                    b.HasIndex("StaffId")
+                        .IsUnique()
+                        .HasFilter("[StaffId] IS NOT NULL");
+
+                    b.ToTable("StaffAccess");
+                });
+
             modelBuilder.Entity("ProductSalesHistory", b =>
                 {
                     b.Property<Guid>("ProductsId")
@@ -507,6 +534,21 @@ namespace PotShop.API.Migrations
                     b.Navigation("Shop");
                 });
 
+            modelBuilder.Entity("PotShop.API.Models.Entities.StaffAccess", b =>
+                {
+                    b.HasOne("PotShop.API.Models.Entities.Location", "Location")
+                        .WithMany()
+                        .HasForeignKey("LocationId");
+
+                    b.HasOne("PotShop.API.Models.Entities.ApiUser", "Staff")
+                        .WithOne("StaffAccess")
+                        .HasForeignKey("PotShop.API.Models.Entities.StaffAccess", "StaffId");
+
+                    b.Navigation("Location");
+
+                    b.Navigation("Staff");
+                });
+
             modelBuilder.Entity("ProductSalesHistory", b =>
                 {
                     b.HasOne("PotShop.API.Models.Entities.Product", null)
@@ -525,6 +567,8 @@ namespace PotShop.API.Migrations
             modelBuilder.Entity("PotShop.API.Models.Entities.ApiUser", b =>
                 {
                     b.Navigation("SalesHistory");
+
+                    b.Navigation("StaffAccess");
                 });
 
             modelBuilder.Entity("PotShop.API.Models.Entities.Inventory", b =>
