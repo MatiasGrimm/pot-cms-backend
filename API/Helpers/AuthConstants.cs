@@ -6,7 +6,7 @@ namespace PotShop.API.Helpers
     {
         public static class JwtClaimIdentifiers
         {
-            public const string Rol = "rol", Id = "id", CompanyId = "coid";
+            public const string Rol = "rol", Id = "id";
         }
     }
 }

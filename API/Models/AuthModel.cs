@@ -56,7 +56,7 @@ namespace PotShop.API.Models
 
                     roles = await _userManager.GetRolesAsync(user);
 
-                    identity = _jwtFactory.GenerateClaimsIdentity(user.UserName, user.Id, roles, user.Location.Id);
+                    identity = _jwtFactory.GenerateClaimsIdentity(user.UserName, user.Id, roles);
                 }
                 else
                 {
@@ -128,7 +128,7 @@ namespace PotShop.API.Models
             return new AuthResponse()
             {
                 User = token.User,
-                Identity = _jwtFactory.GenerateClaimsIdentity(token.User.UserName, token.User.Id, roles, token.User.Location.Id),
+                Identity = _jwtFactory.GenerateClaimsIdentity(token.User.UserName, token.User.Id, roles),
                 RefreshTokenId = Convert.ToBase64String(token.Id.ToByteArray()),
                 Roles = roles,
             };

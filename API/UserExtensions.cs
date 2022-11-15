@@ -10,11 +10,6 @@ namespace PotShop.API
 {
     public static class UserExtensions
     {
-        public static Guid GetLocationId(this ClaimsPrincipal claims)
-        {
-            return new Guid(claims.FindFirstValue(AuthConstants.JwtClaimIdentifiers.CompanyId));
-        }
-
         public static bool HasRole(this ClaimsPrincipal claims, string role)
         {
             return claims.HasClaim(AuthConstants.JwtClaimIdentifiers.Rol, role);
@@ -28,6 +23,10 @@ namespace PotShop.API
         public static bool IsAdmin(this ClaimsPrincipal claims)
         {
             return claims.HasRole(AuthRoles.Admin);
+        }
+        public static bool IsManager(this ClaimsPrincipal claims)
+        {
+            return claims.HasRole(AuthRoles.Manager);
         }
 
         public static string GetUserId(this ClaimsPrincipal claims)

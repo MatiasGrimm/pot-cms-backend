@@ -61,7 +61,7 @@ namespace PotShop.API.Controllers
                 .ProjectTo<UserViewModel>(_mapper.ConfigurationProvider)
                 .FirstOrDefaultAsync();
 
-            if (user == null || (!User.IsAdmin() && User.GetLocationId() != user.Location.Id))
+            if (user == null || (!User.IsAdmin() && _context.StaffAccess.Where(x => x.StaffId == User.GetUserId()).FirstOrDefault().Location.Id != user.Location.Id))
             {
                 return new NotFoundResult();
             }
@@ -77,8 +77,7 @@ namespace PotShop.API.Controllers
             if (!User.IsAdmin())
             {
                 // additional checks for non-admins
-                if (viewModel.Roles?.Any(x => x == AuthRoles.Admin) == true ||
-                    (string.IsNullOrEmpty(viewModel.LocationId) && Guid.Parse(viewModel.LocationId) != User.GetLocationId()))
+                if (viewModel.Roles?.Any(x => x == AuthRoles.Admin) == true)
                 {
                     _logger.LogError("User {username} does not have access to assign the specified roles, or access to the specified company", User.Identity.Name);
 
@@ -115,7 +114,7 @@ namespace PotShop.API.Controllers
                 {
                     if (viewModel.LocationId.Length > 0)
                     {
-                        newUser.Location.Id = Guid.Parse(viewModel.LocationId);
+                        newUser.StaffAccess.Location.Id = Guid.Parse(viewModel.LocationId);
                     }
                     else
                     {
@@ -125,7 +124,7 @@ namespace PotShop.API.Controllers
                 else
                 {
                     // non-admins can only add users to their own organization
-                    newUser.Location.Id = User.GetLocationId();
+                    newUser.StaffAccess.Location.Id = _context.StaffAccess.Where(x => x.StaffId == User.GetUserId()).FirstOrDefault().Location.Id;
                 }
 
                 string userPassword = GeneratePassword();
@@ -156,8 +155,9 @@ namespace PotShop.API.Controllers
 
                     return NotFound();
                 }
-
-                if (!this.UserHasAccess(Guid.Parse(newUser.Id)))
+                bool isInLocation = User.GetUser(_context).StaffAccess.Location.Id == newUser.StaffAccess?.Location.Id;
+                //if (!this.UserHasAccess(Guid.Parse(newUser.Id)))
+                if(User.IsAdmin() || (User.IsManager() && isInLocation))
                 {
                     _logger.LogError("User does not have company access to target user {userid}", newUser.Id);
 

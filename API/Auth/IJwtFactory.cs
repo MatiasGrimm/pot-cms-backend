@@ -10,6 +10,6 @@ namespace PotShop.API.Auth
     {
         Task<string> GenerateEncodedToken(string userName, ClaimsIdentity identity);
 
-        ClaimsIdentity GenerateClaimsIdentity(string userName, string id, IEnumerable<string> roles, Guid companyId);
+        ClaimsIdentity GenerateClaimsIdentity(string userName, string id, IEnumerable<string> roles);
     }
 }

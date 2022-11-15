@@ -29,7 +29,6 @@ namespace PotShop.API.Auth
                  new Claim(JwtRegisteredClaimNames.Jti, await _jwtOptions.JtiGenerator()),
                  new Claim(JwtRegisteredClaimNames.Iat, ToUnixEpochDate(_jwtOptions.IssuedAt).ToString(), ClaimValueTypes.Integer64),
                  identity.FindFirst(AuthConstants.JwtClaimIdentifiers.Id),
-                 identity.FindFirst(AuthConstants.JwtClaimIdentifiers.CompanyId)
             };
 
             claims.AddRange(identity.FindAll(x => x.Type == AuthConstants.JwtClaimIdentifiers.Rol));
@@ -48,11 +47,10 @@ namespace PotShop.API.Auth
             return encodedJwt;
         }
 
-        public ClaimsIdentity GenerateClaimsIdentity(string userName, string id, IEnumerable<string> roles, Guid companyId)
+        public ClaimsIdentity GenerateClaimsIdentity(string userName, string id, IEnumerable<string> roles)
         {
             var claims = new List<Claim>() {
                 new Claim(AuthConstants.JwtClaimIdentifiers.Id, id),
-                new Claim(AuthConstants.JwtClaimIdentifiers.CompanyId, companyId.ToString())
             };
 
             foreach (var role in roles)
