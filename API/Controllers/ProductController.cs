@@ -39,33 +39,31 @@ namespace PotShop.API.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetProducts()
+        public IActionResult GetProducts()
         {
-            IQueryable<Product> db = _context.Products.Where(x => !x.IsDisabled);
+            List<Product> products = new List<Product>();
 
-            if (!User.IsAdmin())
+            if (!User.IsAdmin() || !User.IsManager())
             {
-                //Check user access here.
-                _logger.LogWarning("We need to check the users permissions");
-                //request = request.Where(x => x.CompanyId == User.GetCompanyId());
+                return NotFound();
             }
 
-            //var user = await request.ProjectTo<UserViewModel>(_mapper.ConfigurationProvider).ToListAsync();
+            products = _context.Products.Where(x => !x.IsDisabled).ToList();
 
-            var product = await db.ProjectTo<ProductViewModel>(_mapper.ConfigurationProvider).ToListAsync();
-            return Ok(product);
+            return Ok(products);
         }
 
         [HttpGet("all")]
         public IActionResult GetAllProducts()
         {
-            List<Product> products = _context.Products.ToList();
+            List<Product> products = new List<Product>();
 
-            if (!User.IsAdmin())
+            if (!User.IsAdmin() || !User.IsManager())
             {
-                if (!User.HasPermissions(_context, Access.GetDisabledProducts)) return NotFound();
+                return NotFound();
             }
 
+            products = _context.Products.ToList();
             return Ok(products);
         }
 
