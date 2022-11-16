@@ -86,7 +86,7 @@ namespace PotShop.API.Controllers
         }
 
         [HttpPut]
-        public async Task<IActionResult> UpdateLocation(LocationViewModel viewModel)
+        public IActionResult UpdateLocation(LocationViewModel viewModel)
         {
             if (viewModel == null) return NotFound();
 
@@ -94,13 +94,13 @@ namespace PotShop.API.Controllers
 
             _context.Locations.Update(entity);
 
-            await _context.SaveChangesAsync();
+            _context.SaveChanges();
 
             return Ok(entity);
         }
 
         [HttpPut("state/{id}")]
-        public async Task<IActionResult> UpdateState(Guid id)
+        public IActionResult UpdateState(Guid id)
         {
             Location entity = _context.Locations.Where(x => x.Id == id).FirstOrDefault();
 
@@ -108,16 +108,16 @@ namespace PotShop.API.Controllers
 
             _context.Locations.Update(entity);
 
-            await _context.SaveChangesAsync();
+            _context.SaveChanges();
 
             return Ok(entity);
         }
 
         [HttpDelete]
         [Authorize(AuthRoles.Admin)]
-        public async Task<IActionResult> Delete(Guid id)
+        public IActionResult Delete(Guid id)
         {
-            Location entity = await _context.Locations.Where(x => x.Id == id).FirstOrDefaultAsync();
+            Location entity = _context.Locations.Where(x => x.Id == id).FirstOrDefault();
             _context.Locations.Remove(entity);
             return Ok($"Location {entity.Id} with name {entity.Name}, has been deleted from the database");
         }
