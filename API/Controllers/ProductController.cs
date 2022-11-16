@@ -19,7 +19,7 @@ using PotShop.API.Models.Entities.Enums;
 namespace PotShop.API.Controllers
 {
     [ApiController]
-    //[Authorize(Policy = AuthPolicies.RequireManager)]
+    [Authorize(Policy = AuthPolicies.RequireManager)]
     [Route("[controller]")]
     public class ProductController : Controller
     {
