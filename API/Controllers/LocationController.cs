@@ -43,7 +43,7 @@ namespace PotShop.API.Controllers
         {
             List<SimpleLocationViewModel> locations;
 
-            if (!User.IsAdmin() || User.HasPermissions(_context, Access.GetLocation))
+            if (!User.IsAdmin() && !User.HasPermissions(_context, Access.GetLocation))
             {
                 return NotFound();
             }
@@ -58,7 +58,7 @@ namespace PotShop.API.Controllers
         {
             List<SimpleLocationViewModel> locations;
 
-            if (!User.IsAdmin() || User.HasPermissions(_context, Access.GetLocation))
+            if (!User.IsAdmin() && !User.HasPermissions(_context, Access.GetLocation))
             {
                 return NotFound();
             }
@@ -72,7 +72,7 @@ namespace PotShop.API.Controllers
         {
             LocationViewModel location;
 
-            if (!User.IsAdmin() || User.HasPermissions(_context, Access.GetLocation))
+            if (!User.IsAdmin() && User.HasPermissions(_context, Access.GetLocation))
             {
                 return NotFound();
             }
