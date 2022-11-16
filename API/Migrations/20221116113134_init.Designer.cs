@@ -10,7 +10,7 @@ using PotShop.API.Data;
 namespace PotShop.API.Migrations
 {
     [DbContext(typeof(ApiDbContext))]
-    [Migration("20221115090621_init")]
+    [Migration("20221116113134_init")]
     partial class init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -180,9 +180,6 @@ namespace PotShop.API.Migrations
                     b.Property<bool>("IsDisabled")
                         .HasColumnType("bit");
 
-                    b.Property<Guid?>("LocationId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<bool>("LockoutEnabled")
                         .HasColumnType("bit");
 
@@ -223,8 +220,6 @@ namespace PotShop.API.Migrations
                         .HasColumnType("nvarchar(256)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("LocationId");
 
                     b.HasIndex("NormalizedEmail")
                         .HasDatabaseName("EmailIndex");
@@ -473,15 +468,6 @@ namespace PotShop.API.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("PotShop.API.Models.Entities.ApiUser", b =>
-                {
-                    b.HasOne("PotShop.API.Models.Entities.Location", "Location")
-                        .WithMany()
-                        .HasForeignKey("LocationId");
-
-                    b.Navigation("Location");
-                });
-
             modelBuilder.Entity("PotShop.API.Models.Entities.AuthRefreshToken", b =>
                 {
                     b.HasOne("PotShop.API.Models.Entities.ApiUser", "User")
@@ -537,7 +523,7 @@ namespace PotShop.API.Migrations
             modelBuilder.Entity("PotShop.API.Models.Entities.StaffAccess", b =>
                 {
                     b.HasOne("PotShop.API.Models.Entities.Location", "Location")
-                        .WithMany()
+                        .WithMany("StaffAccess")
                         .HasForeignKey("LocationId");
 
                     b.HasOne("PotShop.API.Models.Entities.ApiUser", "Staff")
@@ -579,6 +565,8 @@ namespace PotShop.API.Migrations
             modelBuilder.Entity("PotShop.API.Models.Entities.Location", b =>
                 {
                     b.Navigation("Inventory");
+
+                    b.Navigation("StaffAccess");
                 });
 #pragma warning restore 612, 618
         }
