@@ -41,12 +41,7 @@ namespace PotShop.API.Controllers
         [HttpGet]
         public IActionResult GetProducts()
         {
-            List<Product> products = new List<Product>();
-
-            if (!User.IsAdmin() || !User.IsManager())
-            {
-                return NotFound();
-            }
+            List<Product> products;
 
             products = _context.Products.Where(x => !x.IsDisabled).ToList();
 
@@ -56,35 +51,26 @@ namespace PotShop.API.Controllers
         [HttpGet("all")]
         public IActionResult GetAllProducts()
         {
-            List<Product> products = new List<Product>();
-
-            if (!User.IsAdmin() || !User.IsManager())
-            {
-                return NotFound();
-            }
+            List<Product> products;
 
             products = _context.Products.ToList();
+
             return Ok(products);
         }
 
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetProduct(string id)
+        public IActionResult GetProduct(string id)
         {
-            var product = await _context.Products
+            var product = _context.Products
                 .Where(x => x.Id == Guid.Parse(id))
                 .ProjectTo<ProductViewModel>(_mapper.ConfigurationProvider)
-                .FirstOrDefaultAsync();
-
-            //if (product == null || (!User.IsAdmin() && User.GetLocationId() != product.Location.Id))
-            //{
-            //    return new NotFoundResult();
-            //}
+                .FirstOrDefault();
 
             return Ok(product);
         }
 
         [HttpPut]
-        public async Task<IActionResult> UpdateProduct(ProductViewModel viewModel)
+        public IActionResult UpdateProduct(ProductViewModel viewModel)
         {
             if (viewModel == null) return NotFound();
 
@@ -92,13 +78,13 @@ namespace PotShop.API.Controllers
 
             _context.Products.Update(entity);
 
-            await _context.SaveChangesAsync();
+            _context.SaveChanges();
 
             return Ok(entity);
         }
 
         [HttpPut("state/{id}")]
-        public async Task<IActionResult> UpdateState(Guid id)
+        public IActionResult UpdateState(Guid id)
         {
             Product entity = _context.Products.Where(x => x.Id == id).FirstOrDefault();
 
@@ -106,16 +92,16 @@ namespace PotShop.API.Controllers
 
             _context.Products.Update(entity);
 
-            await _context.SaveChangesAsync();
+            _context.SaveChanges();
 
             return Ok(entity);
         }
 
         [HttpDelete]
         [Authorize(AuthRoles.Admin)]
-        public async Task<IActionResult> Delete(Guid id)
+        public IActionResult Delete(Guid id)
         {
-            Product entity = await _context.Products.Where(x => x.Id == id).FirstOrDefaultAsync();
+            Product entity = _context.Products.Where(x => x.Id == id).FirstOrDefault();
             _context.Products.Remove(entity);
             return Ok($"Product {entity.Id} with name {entity.Name}, has been deleted from the database");
         }
