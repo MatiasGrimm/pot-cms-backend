@@ -4,7 +4,9 @@ namespace PotShop.API.ViewModels
 {
     public class SimpleLocationViewModel
     {
-        public Guid ManagerId { get; set; }
+        public Guid Id { get; set; }
+
+        //public string ManagerId { get; set; }
 
         public string Name { get; set; }
 

@@ -4,6 +4,6 @@ namespace PotShop.API.ViewModels
 {
     public class CompanyDetailsViewModel : CompanyViewModel
     {
-        public List<UserViewModel> Users { get; set; }
+        public List<StaffViewModel> Users { get; set; }
     }
 }

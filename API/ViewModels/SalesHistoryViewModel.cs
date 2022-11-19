@@ -8,7 +8,7 @@ namespace PotShop.API.ViewModels
     {
         public List<Product> Products { get; set; }
 
-        public ApiUser Employee { get; set; }
+        public Staff Staff { get; set; }
 
         public Location Shop { get; set; }
     }

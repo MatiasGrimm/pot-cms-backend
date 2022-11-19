@@ -1,4 +1,5 @@
-﻿using System;
+﻿using PotShop.API.Models.Entities;
+using System;
 
 namespace PotShop.API.ViewModels
 {
@@ -9,5 +10,7 @@ namespace PotShop.API.ViewModels
         public bool IsDisabled { get; set; }
 
         public Guid InventoryId { get; set; }
+
+        public Manager Manager { get; set; }
     }
 }
