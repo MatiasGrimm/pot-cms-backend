@@ -11,6 +11,6 @@ namespace PotShop.API.ViewModels
 
         public Guid InventoryId { get; set; }
 
-        public Manager Manager { get; set; }
+        public StaffViewModel Manager { get; set; }
     }
 }
