@@ -10,7 +10,7 @@ using PotShop.API.Data;
 namespace PotShop.API.Migrations
 {
     [DbContext(typeof(ApiDbContext))]
-    [Migration("20221116113134_init")]
+    [Migration("20221119111800_init")]
     partial class init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -170,6 +170,10 @@ namespace PotShop.API.Migrations
                     b.Property<DateTimeOffset>("Created")
                         .HasColumnType("datetimeoffset");
 
+                    b.Property<string>("Discriminator")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Email")
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
@@ -230,6 +234,8 @@ namespace PotShop.API.Migrations
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
                     b.ToTable("AspNetUsers");
+
+                    b.HasDiscriminator<string>("Discriminator").HasValue("ApiUser");
                 });
 
             modelBuilder.Entity("PotShop.API.Models.Entities.AuthRefreshToken", b =>
@@ -296,7 +302,7 @@ namespace PotShop.API.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("inventoryProducts");
+                    b.ToTable("InventoryProducts");
                 });
 
             modelBuilder.Entity("PotShop.API.Models.Entities.Location", b =>
@@ -311,16 +317,20 @@ namespace PotShop.API.Migrations
                     b.Property<bool>("IsDisabled")
                         .HasColumnType("bit");
 
-                    b.Property<int>("ManagerId")
-                        .HasColumnType("int");
-
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("Type")
                         .HasColumnType("int");
 
+                    b.Property<string>("manager")
+                        .HasColumnType("nvarchar(450)");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("manager")
+                        .IsUnique()
+                        .HasFilter("[manager] IS NOT NULL");
 
                     b.ToTable("Locations");
                 });
@@ -354,23 +364,23 @@ namespace PotShop.API.Migrations
                     b.Property<string>("CustomerCPR")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("EmployeeId")
-                        .HasColumnType("nvarchar(450)");
-
                     b.Property<DateTime>("PurchaseTime")
                         .HasColumnType("datetime2");
 
                     b.Property<Guid>("ShopId")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<string>("StaffId")
+                        .HasColumnType("nvarchar(450)");
+
                     b.Property<float>("TotalPrice")
                         .HasColumnType("real");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("EmployeeId");
-
                     b.HasIndex("ShopId");
+
+                    b.HasIndex("StaffId");
 
                     b.ToTable("SalesHistories");
                 });
@@ -415,6 +425,18 @@ namespace PotShop.API.Migrations
                     b.HasIndex("SalesHistoriesId");
 
                     b.ToTable("ProductSalesHistory");
+                });
+
+            modelBuilder.Entity("PotShop.API.Models.Entities.Staff", b =>
+                {
+                    b.HasBaseType("PotShop.API.Models.Entities.ApiUser");
+
+                    b.Property<string>("ManagerId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasIndex("ManagerId");
+
+                    b.HasDiscriminator().HasValue("Staff");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -503,21 +525,30 @@ namespace PotShop.API.Migrations
                     b.Navigation("Product");
                 });
 
+            modelBuilder.Entity("PotShop.API.Models.Entities.Location", b =>
+                {
+                    b.HasOne("PotShop.API.Models.Entities.Staff", "Manager")
+                        .WithOne("Location")
+                        .HasForeignKey("PotShop.API.Models.Entities.Location", "manager");
+
+                    b.Navigation("Manager");
+                });
+
             modelBuilder.Entity("PotShop.API.Models.Entities.SalesHistory", b =>
                 {
-                    b.HasOne("PotShop.API.Models.Entities.ApiUser", "Employee")
-                        .WithMany("SalesHistory")
-                        .HasForeignKey("EmployeeId");
-
                     b.HasOne("PotShop.API.Models.Entities.Location", "Shop")
                         .WithMany()
                         .HasForeignKey("ShopId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Employee");
+                    b.HasOne("PotShop.API.Models.Entities.Staff", "Staff")
+                        .WithMany("SalesHistory")
+                        .HasForeignKey("StaffId");
 
                     b.Navigation("Shop");
+
+                    b.Navigation("Staff");
                 });
 
             modelBuilder.Entity("PotShop.API.Models.Entities.StaffAccess", b =>
@@ -526,7 +557,7 @@ namespace PotShop.API.Migrations
                         .WithMany("StaffAccess")
                         .HasForeignKey("LocationId");
 
-                    b.HasOne("PotShop.API.Models.Entities.ApiUser", "Staff")
+                    b.HasOne("PotShop.API.Models.Entities.Staff", "Staff")
                         .WithOne("StaffAccess")
                         .HasForeignKey("PotShop.API.Models.Entities.StaffAccess", "StaffId");
 
@@ -550,11 +581,13 @@ namespace PotShop.API.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("PotShop.API.Models.Entities.ApiUser", b =>
+            modelBuilder.Entity("PotShop.API.Models.Entities.Staff", b =>
                 {
-                    b.Navigation("SalesHistory");
+                    b.HasOne("PotShop.API.Models.Entities.Staff", "Manager")
+                        .WithMany()
+                        .HasForeignKey("ManagerId");
 
-                    b.Navigation("StaffAccess");
+                    b.Navigation("Manager");
                 });
 
             modelBuilder.Entity("PotShop.API.Models.Entities.Inventory", b =>
@@ -565,6 +598,15 @@ namespace PotShop.API.Migrations
             modelBuilder.Entity("PotShop.API.Models.Entities.Location", b =>
                 {
                     b.Navigation("Inventory");
+
+                    b.Navigation("StaffAccess");
+                });
+
+            modelBuilder.Entity("PotShop.API.Models.Entities.Staff", b =>
+                {
+                    b.Navigation("Location");
+
+                    b.Navigation("SalesHistory");
 
                     b.Navigation("StaffAccess");
                 });
