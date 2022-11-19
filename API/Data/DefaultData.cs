@@ -15,7 +15,7 @@ namespace PotShop.API.Data
     {
         private static async Task AddStaff(UserManager<ApiUser> userMgr, string username, string name, Location location)
         {
-            var user = new ApiUser()
+            var user = new Staff()
             {
                 UserName = username,
                 Email = username,
@@ -35,7 +35,7 @@ namespace PotShop.API.Data
         }
         private static async Task AddStaffWithAllPerms(UserManager<ApiUser> userMgr, string username, string name, Location location)
         {
-            var user = new ApiUser()
+            var user = new Staff()
             {
                 UserName = username,
                 Email = username,

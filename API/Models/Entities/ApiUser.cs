@@ -19,10 +19,6 @@ namespace PotShop.API.Models.Entities
 
         public bool IsDisabled { get; set; }
 
-        public StaffAccess StaffAccess { get; set; }
-
         public List<IdentityRole> Roles { get; set; }
-
-        public List<SalesHistory> SalesHistory { get; set; }
     }
 }

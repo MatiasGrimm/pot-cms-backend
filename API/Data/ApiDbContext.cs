@@ -23,7 +23,9 @@ namespace PotShop.API.Data
 
         public DbSet<Inventory> Inventory { get; set; }
 
-        public DbSet<InventoryProduct> inventoryProducts { get; set; }
+        public DbSet<Staff> Staff { get; set; }
+
+        public DbSet<InventoryProduct> InventoryProducts { get; set; }
 
         public DbSet<StaffAccess> StaffAccess { get; set; }
 

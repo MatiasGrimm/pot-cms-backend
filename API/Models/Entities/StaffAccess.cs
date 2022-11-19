@@ -15,7 +15,7 @@ namespace PotShop.API.Models.Entities
 
         public Access Access { get; set; }
 
-        public ApiUser Staff { get; set; }
+        public Staff Staff { get; set; }
 
         public Location Location { get; set; }
     }

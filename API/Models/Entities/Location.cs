@@ -15,8 +15,6 @@ namespace PotShop.API.Models.Entities
 
         public string Address { get; set; }
 
-        public int ManagerId { get; set; }
-
         public int Type { get; set; }
 
         public bool IsDisabled { get; set; }
@@ -24,5 +22,8 @@ namespace PotShop.API.Models.Entities
         public List<StaffAccess> StaffAccess { get; set; }
 
         public Inventory Inventory { get; set; }
+
+        [ForeignKey("manager")]
+        public Staff Manager { get; set; }
     }
 }

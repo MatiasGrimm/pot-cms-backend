@@ -15,7 +15,7 @@ namespace PotShop.API.Models.Entities
 
         public Guid ShopId { get; set; }
 
-        public string EmployeeId { get; set; }
+        public string StaffId { get; set; }
 
         public string CustomerCPR { get; set; }
 
@@ -24,7 +24,7 @@ namespace PotShop.API.Models.Entities
         public float TotalPrice { get; set; }
 
 
-        public ApiUser Employee { get; set; }
+        public Staff Staff { get; set; }
 
         public Location Shop { get; set; }
     }

@@ -49,7 +49,7 @@ namespace PotShop.API.Controllers
                 //request = request.Where(x => x.CompanyId == User.GetCompanyId());
             }
 
-            var user = await request.ProjectTo<UserViewModel>(_mapper.ConfigurationProvider).ToListAsync();
+            var user = await request.ProjectTo<StaffViewModel>(_mapper.ConfigurationProvider).ToListAsync();
             return new OkObjectResult(user);
         }
 
@@ -58,7 +58,7 @@ namespace PotShop.API.Controllers
         {
             var user = await _context.Users
                 .Where(x => x.Id == id)
-                .ProjectTo<UserViewModel>(_mapper.ConfigurationProvider)
+                .ProjectTo<StaffViewModel>(_mapper.ConfigurationProvider)
                 .FirstOrDefaultAsync();
 
             if (user == null || (!User.IsAdmin() && _context.StaffAccess.Where(x => x.StaffId == User.GetUserId()).FirstOrDefault().Location.Id != user.Location.Id))
@@ -70,9 +70,9 @@ namespace PotShop.API.Controllers
         }
 
         [HttpPut]
-        public async Task<IActionResult> ItemPut([FromBody] UserEditViewModel viewModel)
+        public async Task<IActionResult> ItemPut([FromBody] StaffEditViewModel viewModel)
         {
-            ApiUser newUser;
+            Staff newUser;
 
             if (!User.IsAdmin())
             {
@@ -102,7 +102,7 @@ namespace PotShop.API.Controllers
                     return BadRequest();
                 }
 
-                newUser = new ApiUser()
+                newUser = new Staff()
                 {
                     Email = viewModel.Email,
                     UserName = viewModel.Email,
@@ -147,7 +147,7 @@ namespace PotShop.API.Controllers
             }
             else
             {
-                newUser = await _context.Users.FirstOrDefaultAsync(x => x.Id == viewModel.Id);
+                newUser = await _context.Staff.FirstOrDefaultAsync(x => x.Id == viewModel.Id);
 
                 if (newUser == null)
                 {
@@ -155,7 +155,7 @@ namespace PotShop.API.Controllers
 
                     return NotFound();
                 }
-                bool isInLocation = User.GetUser(_context).StaffAccess.Location.Id == newUser.StaffAccess?.Location.Id;
+                bool isInLocation = _context.StaffAccess.Where(x => x.StaffId == User.GetUserId()).FirstOrDefault()?.Location.Id == newUser.StaffAccess?.Location.Id;
                 //if (!this.UserHasAccess(Guid.Parse(newUser.Id)))
                 if(User.IsAdmin() || (User.IsManager() && isInLocation))
                 {
