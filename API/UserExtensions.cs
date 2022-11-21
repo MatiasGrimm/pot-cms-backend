@@ -55,5 +55,10 @@ namespace PotShop.API
         {
             return context.StaffAccess.Where(x => x.StaffId == claims.GetUserId() && x.Access.HasFlag(access)).Any();
         }
+
+        public static bool IsManager(this ClaimsPrincipal claims, ApiDbContext context, Guid id)
+        {
+            return context.Locations.Where(x => x.Id == id).FirstOrDefault().Manager?.Id == claims.GetUserId();
+        }
     }
 }
