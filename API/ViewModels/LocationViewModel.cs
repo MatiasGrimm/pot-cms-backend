@@ -9,7 +9,7 @@ namespace PotShop.API.ViewModels
 
         public bool IsDisabled { get; set; }
 
-        public InventoryViewModel Inventory { get; set; }
+        public SimpleInventoryViewModel Inventory { get; set; }
 
         public SimpleStaffViewModel Manager { get; set; }
     }

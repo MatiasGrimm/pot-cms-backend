@@ -20,6 +20,11 @@ namespace PotShop.API.ViewModels.Mappings
             CreateMap<Product, ProductViewModel>()
                 .ReverseMap();
 
+            CreateMap<Product, SimpleProductViewModel>();
+
+            CreateMap<InventoryProduct, InventoryProductViewModel>()
+                .ReverseMap();
+
             CreateMap<Inventory, InventoryViewModel>()
                 .ReverseMap();
 
