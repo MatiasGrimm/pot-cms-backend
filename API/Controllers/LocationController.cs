@@ -72,7 +72,7 @@ namespace PotShop.API.Controllers
         {
             LocationViewModel location;
 
-            if (!User.IsAdmin() && User.HasPermissions(_context, Access.GetLocation))
+            if (!User.IsAdmin() && !User.HasPermissions(_context, Access.GetLocation))
             {
                 return NotFound();
             }
@@ -83,6 +83,39 @@ namespace PotShop.API.Controllers
                 .FirstOrDefault();
 
             return Ok(location);
+        }
+
+        [Authorize(Policy = AuthPolicies.RequireAdmin)]
+        [HttpPut("ChangeManager")]
+        public IActionResult ChangeManager([FromBody] LocationStaffViewModel viewModel)
+        {
+            Location location;
+            Staff staff;
+
+            if (!User.IsAdmin())
+            {
+                return NotFound();
+            }
+
+            location = _context.Locations
+                .Where(x => x.Id == viewModel.LocationId)
+                .FirstOrDefault();
+            staff = _context.Staff
+                .Where(x => x.Id == viewModel.ManagerId)
+                .FirstOrDefault();
+
+            if (location == null || staff == null)
+            {
+                return NotFound();
+            }
+
+            location.Manager = staff;
+
+            _context.Locations.Update(location);
+
+            _context.SaveChanges();
+
+            return Ok();
         }
 
         [HttpPut]
