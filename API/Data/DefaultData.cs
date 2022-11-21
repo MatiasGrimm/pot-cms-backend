@@ -108,10 +108,17 @@ namespace PotShop.API.Data
                     Description = "3 Jeg er disabled",
                     IsDisabled = true
                 };
+                Product weed = new Product()
+                {
+                    Name = "Weed",
+                    Description = "Ik tjænk på det",
+                    IsDisabled = false
+                };
 
                 await context.Products.AddAsync(prod1);
                 await context.Products.AddAsync(prod2);
                 await context.Products.AddAsync(prod3);
+                await context.Products.AddAsync(weed);
 
                 await context.SaveChangesAsync();
             }
