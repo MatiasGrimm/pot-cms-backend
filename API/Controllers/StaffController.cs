@@ -20,15 +20,15 @@ namespace PotShop.API.Controllers
     [ApiController]
     [Authorize(Policy = AuthPolicies.RequireManager)]
     [Route("[controller]")]
-    public class UserController : Controller
+    public class StaffController : Controller
     {
-        private readonly ILogger<UserController> _logger;
+        private readonly ILogger<StaffController> _logger;
         private readonly UserManager<ApiUser> _userManager;
         private readonly ApiDbContext _context;
         private readonly IMapper _mapper;
         private readonly IMailService _mailService;
 
-        public UserController(ILogger<UserController> logger, ApiDbContext context, IMapper mapper, UserManager<ApiUser> userManager, IMailService mailService)
+        public StaffController(ILogger<StaffController> logger, ApiDbContext context, IMapper mapper, UserManager<ApiUser> userManager, IMailService mailService)
         {
             _logger = logger;
             _context = context;
@@ -38,9 +38,9 @@ namespace PotShop.API.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetUsers()
+        public async Task<IActionResult> GetStaff()
         {
-            IQueryable<ApiUser> request = _context.Users;
+            IQueryable<Staff> request = _context.Staff;
 
             if (!User.IsAdmin())
             {
@@ -49,30 +49,30 @@ namespace PotShop.API.Controllers
                 //request = request.Where(x => x.CompanyId == User.GetCompanyId());
             }
 
-            var user = await request.ProjectTo<StaffViewModel>(_mapper.ConfigurationProvider).ToListAsync();
-            return new OkObjectResult(user);
+            var staff = await request.ProjectTo<StaffViewModel>(_mapper.ConfigurationProvider).ToListAsync();
+            return new OkObjectResult(staff);
         }
 
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetUser(string id)
+        public async Task<IActionResult> GetStaff(string id)
         {
-            var user = await _context.Users
+            var staff = await _context.Staff
                 .Where(x => x.Id == id)
                 .ProjectTo<StaffViewModel>(_mapper.ConfigurationProvider)
                 .FirstOrDefaultAsync();
 
-            if (user == null || (!User.IsAdmin() && _context.StaffAccess.Where(x => x.StaffId == User.GetUserId()).FirstOrDefault().Location.Id != user.Location.Id))
+            if (staff == null || (!User.IsAdmin() && _context.StaffAccess.Where(x => x.StaffId == User.GetUserId()).FirstOrDefault().Location.Id != staff.Location.Id))
             {
                 return new NotFoundResult();
             }
 
-            return new OkObjectResult(user);
+            return new OkObjectResult(staff);
         }
 
         [HttpPut]
         public async Task<IActionResult> ItemPut([FromBody] StaffEditViewModel viewModel)
         {
-            Staff newUser;
+            Staff newStaff;
 
             if (!User.IsAdmin())
             {
@@ -102,7 +102,7 @@ namespace PotShop.API.Controllers
                     return BadRequest();
                 }
 
-                newUser = new Staff()
+                newStaff = new Staff()
                 {
                     Email = viewModel.Email,
                     UserName = viewModel.Email,
@@ -114,7 +114,7 @@ namespace PotShop.API.Controllers
                 {
                     if (viewModel.LocationId.Length > 0)
                     {
-                        newUser.StaffAccess.Location.Id = Guid.Parse(viewModel.LocationId);
+                        newStaff.StaffAccess.Location.Id = Guid.Parse(viewModel.LocationId);
                     }
                     else
                     {
@@ -124,12 +124,12 @@ namespace PotShop.API.Controllers
                 else
                 {
                     // non-admins can only add users to their own organization
-                    newUser.StaffAccess.Location.Id = _context.StaffAccess.Where(x => x.StaffId == User.GetUserId()).FirstOrDefault().Location.Id;
+                    newStaff.StaffAccess.Location.Id = _context.StaffAccess.Where(x => x.StaffId == User.GetUserId()).FirstOrDefault().Location.Id;
                 }
 
                 string userPassword = GeneratePassword();
 
-                IdentityResult result = await _userManager.CreateAsync(newUser, userPassword);
+                IdentityResult result = await _userManager.CreateAsync(newStaff, userPassword);
 
                 if (!result.Succeeded)
                 {
@@ -138,40 +138,40 @@ namespace PotShop.API.Controllers
 
                 if (viewModel.Roles != null)
                 {
-                    await _userManager.AddToRolesAsync(newUser, viewModel.Roles);
+                    await _userManager.AddToRolesAsync(newStaff, viewModel.Roles);
                 }
 
-                await _mailService.SendNewUserEmailAsync(newUser.Email, newUser.Name ?? newUser.Email, userPassword);
+                await _mailService.SendNewUserEmailAsync(newStaff.Email, newStaff.Name ?? newStaff.Email, userPassword);
                 
-                _logger.LogInformation("New user was added with email {email}", newUser.Name);
+                _logger.LogInformation("New user was added with email {email}", newStaff.Name);
             }
             else
             {
-                newUser = await _context.Staff.FirstOrDefaultAsync(x => x.Id == viewModel.Id);
+                newStaff = await _context.Staff.FirstOrDefaultAsync(x => x.Id == viewModel.Id);
 
-                if (newUser == null)
+                if (newStaff == null)
                 {
                     _logger.LogError("User with id {userid} not found", viewModel.Id);
 
                     return NotFound();
                 }
-                bool isInLocation = _context.StaffAccess.Where(x => x.StaffId == User.GetUserId()).FirstOrDefault()?.Location.Id == newUser.StaffAccess?.Location.Id;
+                bool isInLocation = _context.StaffAccess.Where(x => x.StaffId == User.GetUserId()).FirstOrDefault()?.Location.Id == newStaff.StaffAccess?.Location.Id;
                 //if (!this.UserHasAccess(Guid.Parse(newUser.Id)))
                 if(User.IsAdmin() || (User.IsManager() && isInLocation))
                 {
-                    _logger.LogError("User does not have company access to target user {userid}", newUser.Id);
+                    _logger.LogError("User does not have company access to target user {userid}", newStaff.Id);
 
                     return NotFound();
                 }
 
-                newUser.Email = viewModel.Email;
-                newUser.UserName = viewModel.Email;
-                newUser.PhoneNumber = viewModel.PhoneNumber;
-                newUser.Name = viewModel.Name;
+                newStaff.Email = viewModel.Email;
+                newStaff.UserName = viewModel.Email;
+                newStaff.PhoneNumber = viewModel.PhoneNumber;
+                newStaff.Name = viewModel.Name;
 
-                _logger.LogInformation($"User {newUser.Email} with id {newUser.Id} updated by {User.GetUserId()}");
+                _logger.LogInformation($"User {newStaff.Email} with id {newStaff.Id} updated by {User.GetUserId()}");
 
-                var result = await _userManager.UpdateAsync(newUser);
+                var result = await _userManager.UpdateAsync(newStaff);
 
                 if (!result.Succeeded)
                 {
@@ -180,20 +180,40 @@ namespace PotShop.API.Controllers
                     return BadRequest(result);
                 }
 
-                await _userManager.SetRolesAsync(newUser, viewModel.Roles);
+                await _userManager.SetRolesAsync(newStaff, viewModel.Roles);
 
                 if (!string.IsNullOrEmpty(viewModel.Password))
                 {
-                    string token = await _userManager.GeneratePasswordResetTokenAsync(newUser);
-                    await _userManager.ResetPasswordAsync(newUser, token, viewModel.Password);
+                    string token = await _userManager.GeneratePasswordResetTokenAsync(newStaff);
+                    await _userManager.ResetPasswordAsync(newStaff, token, viewModel.Password);
                 }
             }
 
             await _context.SaveChangesAsync();
 
-            _logger.LogInformation("Updated user {userid}", newUser.Id);
+            _logger.LogInformation("Updated user {userid}", newStaff.Id);
 
             return new OkResult();
+        }
+
+        [HttpPut("ChangeState/{id}")]
+        public IActionResult ChangeStaffState(string id)
+        {
+            var staff = _context.Staff
+                .Where(x => x.Id == id)
+                .FirstOrDefault();
+            
+            if (staff == null)
+            {
+                return NotFound();
+            }
+
+            staff.IsDisabled = !staff.IsDisabled;
+
+            _context.Staff.Update(staff);
+            _context.SaveChanges();
+
+            return Ok(staff);
         }
 
         private static readonly Random Random = new();
