@@ -23,13 +23,13 @@ namespace PotShop.API.Controllers
     [Route("[controller]")]
     public class LocationController : Controller
     {
-        private readonly ILogger<UserController> _logger;
+        private readonly ILogger<LocationController> _logger;
         private readonly UserManager<ApiUser> _userManager;
         private readonly ApiDbContext _context;
         private readonly IMapper _mapper;
         private readonly IMailService _mailService;
 
-        public LocationController(ILogger<UserController> logger, ApiDbContext context, IMapper mapper, UserManager<ApiUser> userManager, IMailService mailService)
+        public LocationController(ILogger<LocationController> logger, ApiDbContext context, IMapper mapper, UserManager<ApiUser> userManager, IMailService mailService)
         {
             _logger = logger;
             _context = context;
