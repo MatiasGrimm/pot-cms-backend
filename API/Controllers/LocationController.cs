@@ -92,11 +92,6 @@ namespace PotShop.API.Controllers
             Location location;
             Staff staff;
 
-            if (!User.IsAdmin())
-            {
-                return NotFound();
-            }
-
             location = _context.Locations
                 .Where(x => x.Id == viewModel.LocationId)
                 .FirstOrDefault();
@@ -116,6 +111,68 @@ namespace PotShop.API.Controllers
             _context.SaveChanges();
 
             return Ok();
+        }
+
+        /// Id : Product id not the id of InventoryProduct
+        [HttpPut("AddInvItem/{Id}")]
+        public IActionResult AddInvItem([FromBody] InventoryProductEditViewModel invProduct, Guid id)
+        {
+            if (!User.IsManager(_context, id) && !User.HasPermissions(_context, Access.UpdateInventory))
+            {
+                return NotFound();
+            }
+
+            Inventory inventory = _context.Inventory
+                .Where(x => x.locationId == id)
+                .Include(x => x.Products)
+                .ThenInclude(x => x.Product)
+                .FirstOrDefault();
+
+            if (inventory == null)
+            {
+                inventory = new Inventory()
+                {
+                    Products = new List<InventoryProduct>()
+                };
+            }
+
+            if (inventory.Products.Any(x => x.ProductId == invProduct.ProductId))
+            {
+                inventory.Products.Where(x => x.ProductId == invProduct.ProductId).FirstOrDefault().Quantity += invProduct.Quantity;
+            }
+            else
+            {
+                InventoryProduct _invProduct = new InventoryProduct()
+                {
+                    Quantity = invProduct.Quantity,
+                    ProductId = invProduct.ProductId,
+                };
+
+                inventory.Products.Add(_invProduct);
+            }
+
+            _context.Update(inventory);
+            _context.SaveChanges();
+
+            InventoryViewModel _inv = _mapper.Map<InventoryViewModel>(inventory);
+
+            return Ok(_inv);
+        }
+
+        [HttpGet("GetInv/{Id}")]
+        public IActionResult GetInventory(Guid id)
+        {
+            if (!User.HasPermissions(_context, Access.GetInventory))
+            {
+                return NotFound();
+            }
+
+            InventoryViewModel inventory = _context.Inventory
+                .Where(x => x.Location.Id == id)
+                .ProjectTo<InventoryViewModel>(_mapper.ConfigurationProvider)
+                .FirstOrDefault();
+
+            return Ok(inventory);
         }
 
         [HttpPut]
