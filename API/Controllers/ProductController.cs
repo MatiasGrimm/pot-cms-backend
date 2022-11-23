@@ -39,21 +39,11 @@ namespace PotShop.API.Controllers
         }
 
         [HttpGet]
-        public IActionResult GetProducts()
+        public IActionResult GetProducts(bool showAll = false)
         {
             List<Product> products;
 
-            products = _context.Products.Where(x => !x.IsDisabled).ToList();
-
-            return Ok(products);
-        }
-
-        [HttpGet("all")]
-        public IActionResult GetAllProducts()
-        {
-            List<Product> products;
-
-            products = _context.Products.ToList();
+            products = _context.Products.Where(x => showAll ? true : x.IsDisabled == false).ToList();
 
             return Ok(products);
         }

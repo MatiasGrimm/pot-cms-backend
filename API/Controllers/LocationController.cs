@@ -15,6 +15,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using PotShop.API.Models.Entities.Enums;
+using System.Security.Cryptography.X509Certificates;
 
 namespace PotShop.API.Controllers
 {
@@ -39,7 +40,7 @@ namespace PotShop.API.Controllers
         }
 
         [HttpGet]
-        public IActionResult GetLocations()
+        public IActionResult GetLocations(bool showAll = false)
         {
             List<SimpleLocationViewModel> locations;
 
@@ -48,22 +49,10 @@ namespace PotShop.API.Controllers
                 return NotFound();
             }
 
-            locations = _context.Locations.Where(x => !x.IsDisabled).ProjectTo<SimpleLocationViewModel>(_mapper.ConfigurationProvider).ToList();
-            return Ok(locations);
-        }
-
-
-        [HttpGet("all")]
-        public IActionResult GetAllLocations()
-        {
-            List<SimpleLocationViewModel> locations;
-
-            if (!User.IsAdmin() && !User.HasPermissions(_context, Access.GetLocation))
-            {
-                return NotFound();
-            }
-
-            locations = _context.Locations.ProjectTo<SimpleLocationViewModel>(_mapper.ConfigurationProvider).ToList();
+            locations = _context.Locations
+                .Where(x => showAll ? true : x.IsDisabled == false)
+                .ProjectTo<SimpleLocationViewModel>(_mapper.ConfigurationProvider)
+                .ToList();
             return Ok(locations);
         }
 
