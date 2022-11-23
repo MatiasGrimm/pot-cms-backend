@@ -10,8 +10,8 @@ using PotShop.API.Data;
 namespace PotShop.API.Migrations
 {
     [DbContext(typeof(ApiDbContext))]
-    [Migration("20221119111800_init")]
-    partial class init
+    [Migration("20221123135553_Init")]
+    partial class Init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -343,6 +343,9 @@ namespace PotShop.API.Migrations
 
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<byte[]>("ImageBytes")
+                        .HasColumnType("varbinary(max)");
 
                     b.Property<bool>("IsDisabled")
                         .HasColumnType("bit");

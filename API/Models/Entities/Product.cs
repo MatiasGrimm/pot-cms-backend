@@ -17,6 +17,8 @@ namespace PotShop.API.Models.Entities
 
         public bool IsDisabled { get; set; }
 
+        public byte[]? ImageBytes { get; set; }
+
         public List<SalesHistory> SalesHistories { get; set; }
     }
 }

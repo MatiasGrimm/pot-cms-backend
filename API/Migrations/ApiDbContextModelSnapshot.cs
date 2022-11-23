@@ -342,6 +342,9 @@ namespace PotShop.API.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<byte[]>("ImageBytes")
+                        .HasColumnType("varbinary(max)");
+
                     b.Property<bool>("IsDisabled")
                         .HasColumnType("bit");
 
