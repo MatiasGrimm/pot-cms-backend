@@ -1,6 +1,5 @@
 using PotShop.API.Data;
 using PotShop.API.Models;
-using PotShop.API.Services;
 using PotShop.API.ViewModels.Mappings;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -50,11 +49,10 @@ namespace PotShop.API
             // services and models
             services.TryAddTransient<IHttpContextAccessor, HttpContextAccessor>();
             services.TryAddScoped<IAuthModel, AuthModel>();
-            services.AddSingleton<IMailService, MailService>();
 
             if (Environment.IsDevelopment())
             {
-                services.AddSingleton<IMailSenderService, DummyMailSenderService>();
+                // Dev services
             }
             else
             {
@@ -79,6 +77,13 @@ namespace PotShop.API
                     .AllowAnyOrigin()
                     .AllowAnyMethod()
                     .AllowAnyHeader());
+            }
+            else
+            {
+                app.UseCors(builder => builder
+                .WithOrigins("https://matiasgrimm.com")
+                .AllowAnyMethod()
+                .AllowAnyHeader());
             }
 
             app.UseRouting();

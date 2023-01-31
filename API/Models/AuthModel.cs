@@ -1,7 +1,6 @@
 ﻿using PotShop.API.Auth;
 using PotShop.API.Data;
 using PotShop.API.Models.Entities;
-using PotShop.API.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -21,16 +20,14 @@ namespace PotShop.API.Models
         private readonly ApiDbContext _context;
         private readonly ILogger<AuthModel> _logger;
         private readonly ClaimsPrincipal _user;
-        private readonly IMailService _mailService;
 
-        public AuthModel(UserManager<ApiUser> userManager, IJwtFactory jwtFactory, ApiDbContext context, ILogger<AuthModel> logger, IHttpContextAccessor httpContextAccessor, IMailService mailService)
+        public AuthModel(UserManager<ApiUser> userManager, IJwtFactory jwtFactory, ApiDbContext context, ILogger<AuthModel> logger, IHttpContextAccessor httpContextAccessor)
         {
             _userManager = userManager;
             _jwtFactory = jwtFactory;
             _context = context;
             _logger = logger;
             _user = httpContextAccessor.HttpContext.User;
-            _mailService = mailService;
         }
 
         public async Task<AuthResponse> AuthenticateWithCredentialsAsync(string username, string password)
@@ -162,7 +159,7 @@ namespace PotShop.API.Models
 
             string token = await _userManager.GeneratePasswordResetTokenAsync(user);
 
-            await _mailService.SendPasswordResetEmailAsync(user.Email, user.Name ?? user.Email, token);
+            //await _mailService.SendPasswordResetEmailAsync(user.Email, user.Name ?? user.Email, token);
 
             _logger.LogInformation("Sent password reset token for {userId} {email}", user.Id, user.Email);
 

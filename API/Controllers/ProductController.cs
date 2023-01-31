@@ -3,7 +3,6 @@ using AutoMapper.QueryableExtensions;
 using PotShop.API.Data;
 using PotShop.API.Helpers;
 using PotShop.API.Models.Entities;
-using PotShop.API.Services;
 using PotShop.API.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -27,15 +26,13 @@ namespace PotShop.API.Controllers
         private readonly UserManager<ApiUser> _userManager;
         private readonly ApiDbContext _context;
         private readonly IMapper _mapper;
-        private readonly IMailService _mailService;
 
-        public ProductController(ILogger<ProductController> logger, ApiDbContext context, IMapper mapper, UserManager<ApiUser> userManager, IMailService mailService)
+        public ProductController(ILogger<ProductController> logger, ApiDbContext context, IMapper mapper, UserManager<ApiUser> userManager)
         {
             _logger = logger;
             _context = context;
             _mapper = mapper;
             _userManager = userManager;
-            _mailService = mailService;
         }
 
         [HttpGet]

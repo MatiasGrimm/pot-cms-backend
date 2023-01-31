@@ -3,7 +3,6 @@ using AutoMapper.QueryableExtensions;
 using PotShop.API.Data;
 using PotShop.API.Helpers;
 using PotShop.API.Models.Entities;
-using PotShop.API.Services;
 using PotShop.API.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -26,15 +25,13 @@ namespace PotShop.API.Controllers
         private readonly UserManager<ApiUser> _userManager;
         private readonly ApiDbContext _context;
         private readonly IMapper _mapper;
-        private readonly IMailService _mailService;
 
-        public StaffController(ILogger<StaffController> logger, ApiDbContext context, IMapper mapper, UserManager<ApiUser> userManager, IMailService mailService)
+        public StaffController(ILogger<StaffController> logger, ApiDbContext context, IMapper mapper, UserManager<ApiUser> userManager)
         {
             _logger = logger;
             _context = context;
             _mapper = mapper;
             _userManager = userManager;
-            _mailService = mailService;
         }
 
         [HttpGet]
@@ -141,7 +138,7 @@ namespace PotShop.API.Controllers
                     await _userManager.AddToRolesAsync(newStaff, viewModel.Roles);
                 }
 
-                await _mailService.SendNewUserEmailAsync(newStaff.Email, newStaff.Name ?? newStaff.Email, userPassword);
+                //await _mailService.SendNewUserEmailAsync(newStaff.Email, newStaff.Name ?? newStaff.Email, userPassword);
                 
                 _logger.LogInformation("New user was added with email {email}", newStaff.Name);
             }
